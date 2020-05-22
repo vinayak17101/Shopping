@@ -63,7 +63,12 @@ app.post('/signup', async(req, res) => {
 
 // Login Page
 app.get('/login', (req, res) => {
-  res.render('login')
+  try {
+    auth
+    res.redirect('/home')
+  } catch {
+    res.render('login')
+  }
 })
 
 app.post('/login', async(req, res) => {
@@ -199,6 +204,18 @@ app.get('/addtolist/:id', auth, (req, res) => {
     res.redirect('/addproduct')
   })
 })
+
+app.get('/list', auth, (req, res) => {
+  if(!req.session.cart) {
+    return res.render('list')
+  }
+  var list = new List(req.session.list)
+  res.render('list', {
+    products: list.generateArray(), 
+    totalPrice: cart.totalPrice
+  })
+})
+
 
 // Add Product image
 app.get('/image', (req, res) => {
