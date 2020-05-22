@@ -129,11 +129,13 @@ app.post('/billing/:token', auth, upload.single('image'), async(req, res) => {
 
 var products = []
 var count = 0
+var totalQty = 0
 
 // Add Product Page
 app.get('/addproduct', auth, (req, res) => {
   res.render('addproduct', {
-    products
+    products,
+    totalQty
   })
 })
 
@@ -152,20 +154,30 @@ app.post('/addproduct', auth, upload.single('image'), async(req, res) => {
     };
   const response = await visualRecognition.analyze(params)
   const objects = response.result.images[0].objects.collections[0].objects
+  console.log(objects)
   for (const comp of objects) {
     const item = await productInfo.findOne({product: comp.object})
-    var bytes = new Uint8Array(item.image.buffer);
-    src = 'data:image/png;base64,'+encode(bytes);
-    products.push({
-      index: count++,
-      id: item.id,
-      name: item.product,
-      image: src,
-      price: item.price
-    })
+    var flag = true
+    for (const c of products) {
+      if(c.id == item.id) {
+        flag = false
+      }
+    }
+    if(flag == true) {
+      var bytes = new Uint8Array(item.image.buffer);
+      src = 'data:image/png;base64,'+encode(bytes);
+      products.push({
+        index: count++,
+        id: item.id,
+        name: item.product,
+        image: src,
+        price: item.price
+      })
+    } 
   }
   res.render('addproduct', {
-    products
+    products,
+    totalQty
   })
 })
 
@@ -183,6 +195,7 @@ app.get('/addtolist/:id', auth, (req, res) => {
     list.add(product, product.id, qty)
     req.session.list = list
     console.log(req.session.list)
+    totalQty = req.session.list.totalQty
     res.redirect('/addproduct')
   })
 })

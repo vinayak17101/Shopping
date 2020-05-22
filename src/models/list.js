@@ -1,5 +1,6 @@
-module.exports = function Cart(oldCart) {
+module.exports = function List(oldCart) {
     this.items = oldCart.items || {};
+    this.totalQty = oldCart.totalQty || 0;
     this.items.qty = oldCart.items.qty || 0;
 
     this.add = function(item, id, qty) {
@@ -8,6 +9,7 @@ module.exports = function Cart(oldCart) {
             storedItem = this.items[id] = {item: item, qty: 0}
         }
         storedItem.qty += qty;
+        this.totalQty++;
     }
 
     this.generateArray = function() {
