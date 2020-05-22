@@ -128,6 +128,7 @@ app.post('/billing/:token', auth, upload.single('image'), async(req, res) => {
 })
 
 var products = []
+var count = 0
 
 // Add Product Page
 app.get('/addproduct', auth, (req, res) => {
@@ -156,6 +157,7 @@ app.post('/addproduct', auth, upload.single('image'), async(req, res) => {
     var bytes = new Uint8Array(item.image.buffer);
     src = 'data:image/png;base64,'+encode(bytes);
     products.push({
+      index: count++,
       id: item.id,
       name: item.product,
       image: src,
@@ -177,9 +179,10 @@ app.get('/addtolist/:id', auth, (req, res) => {
       console.log('Error')
     }
     const qty = parseInt(req.query.qty)
-    cart.add(product, product.id, )
-    req.session.cart = cart
-    console.log(req.session.cart)
+    console.log(qty)
+    list.add(product, product.id, qty)
+    req.session.list = list
+    console.log(req.session.list)
     res.redirect('/addproduct')
   })
 })

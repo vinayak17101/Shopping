@@ -35,7 +35,7 @@
                                 <p><b>Rs. {{this.price}} <br> {{this.name}}</b></p>
                                 <label for="qty"><b>Quantity</b></label>
                                 <input type="number" name="qty" id="qty{{this.index}}" style="width: 4em">
-                                <a id="add-cart{{this.index}}"><button type="submit" class="btn btn-success" onclick="add({{this.index}})">Include</button></a>
+                                <a href="/addtolist/{{this.id}}" class="add-cart" id="add-cart{{this.index}}"><button type="button" class="btn btn-success" onclick="add({{this.index}})">Include</button></a>
                             </center>
                         </div>
                     {{/each}}
@@ -48,7 +48,7 @@
         document.getElementById("image-form").action = '/addproduct'
         function add(index) {
             const qty = document.getElementById("qty" + index).value
-            document.getElementById("add-cart" + index).href = "/addtolist/" + index + "?" + qty
+            document.getElementById("add-cart" + index).href += "?qty=" + qty
         } 
      </script>
 </html>
