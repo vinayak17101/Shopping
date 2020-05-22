@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Signup</title>
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/font-awesome.css" rel="stylesheet" type="text/css">
+    <link href="css/styles.css" rel="stylesheet">
+    <link rel="icon" href="/img/title.png">
+  </head>
+  <body>
+    <div class="container">
+      <div class="card card-login mx-auto mt-5">
+        <div class="card-header bg-primary text-white">Create your own account</div>
+        <div class="card-body">
+          <form id="login-form" action="/signup" method="POST">
+            <div class="form-group">
+              <div class="form-label-group">
+                <input type="text" id="username" class="form-control" placeholder="username" required="required" autofocus="autofocus" name="username">
+                <label for="username">Enter username</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="form-label-group">
+                <input type="text" id="email" class="form-control" placeholder="Email Address" required="required" autofocus="autofocus" name="email">
+                <label for="username">Email Address</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="form-label-group">
+                <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="required" name="password">
+                <label for="inputPassword">Password</label>
+              </div>
+            </div>
+            <div class="form-group">
+            </div>
+          </form>
+          <button type="submit" form="login-form" class="btn btn-primary btn-sm">Create</button>
+          <div class="text-center">
+            <br>
+            <p class='error'>{{errorMessage}}</p>
+          </div>
+          <div class="text-center">
+            <p>Already have an account?</p><a class="d-block small" href="/login">Login</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery.easing.min.js"></script>
+  </body>
+</html>

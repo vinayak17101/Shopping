@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="icon" href="./img/title.png">
+        <title>Update Stock</title>
+    </head>
+    <body>
+        {{>userHeader}}
+        <link rel="stylesheet" href="/css/addproduct.css">
+        <div id="content-wrapper">
+            <div class="container-fluid">
+            <!-- Breadcrumbs-->
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                <a href="index.html">Home</a>
+                </li>
+                <li class="breadcrumb-item active">Update Stock</li>
+            </ol>
+            <br>
+            <h2>Upload the image of the products</h2>
+            <br>
+            <div class="container-fluid">
+                <form method="POST" enctype="multipart/form-data" id="image-form">
+                    <input type="file" name="image">
+                    <button type="submit" class="btn btn-success">Upload</button>
+                </form>
+            </div>
+            <br>
+            <div class="container-fluid">
+                <div class="row">
+                    {{#each products}}
+                        <div class="column">
+                            <center>
+                                <img src="{{this.image}}">
+                                <p><b>Rs. {{this.price}} <br> {{this.name}}</b></p>
+                                <label for="qty"><b>Quantity</b></label>
+                                <input type="number" name="qty" id="qty{{this.index}}" style="width: 4em">
+                                <a id="add-cart{{this.index}}"><button type="submit" class="btn btn-success" onclick="add({{this.index}})">Include</button></a>
+                            </center>
+                        </div>
+                    {{/each}}
+                </div>
+            </div>
+            </div>
+        </div>
+    </body>
+    <script>
+        document.getElementById("image-form").action = '/addproduct'
+        function add(index) {
+            const qty = document.getElementById("qty" + index).value
+            document.getElementById("add-cart" + index).href = "/addtolist/" + index + "?" + qty
+        } 
+     </script>
+</html>
