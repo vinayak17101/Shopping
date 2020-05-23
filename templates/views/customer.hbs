@@ -27,14 +27,25 @@
                 </form>
             </div>
             <br>
+            <br>
             {{# if name}}
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-sm-6 col-md-4">
+                        <div class="col-sm-4 col-md-4">
                             <img src="{{image}}">
                         </div>
-                        <div class="col-sm-6 col-md-8">
+                        <div class="col-sm-4 col-md-4">
+                            <br>
+                            <br>
                             <h4> <b>Name:</b> {{name}}</h4>
+                            <h4> <b>Email Address:</b> {{email}}</h4>
+                            <h4> <b>Credit Amount:</b> <span style="color: red;">Rs. {{credit}}</span></h4>
+                            <h4> <b>Debit Amount:</b> <span style="color: blue;">Rs. {{debit}}</span></h4>
+                            <h4> <b>Loyality Amount:</b> <span style="color: green;">Rs. {{loyalityPoints}}</span></h4>
+                            <br>
+                            <center>
+                                <a href="/billing"><button type="button" class="btn btn-info">Proceed</button></a>
+                            </center>
                         </div>
                     </div>
                 </div>
