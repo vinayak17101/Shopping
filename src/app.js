@@ -51,7 +51,7 @@ app.post('/signup', async(req, res) => {
   try {
       await user.save()
       const token = await user.generateAuthToken()
-      res.cookie('jwt', token)
+      res.cookie('jwt', token, {maxAge: 2 * 60 * 60 * 1000})
       res.redirect("/home")
   } catch (e) {
     console.log(e)
@@ -75,7 +75,7 @@ app.post('/login', async(req, res) => {
   try {
     const user = await User.findByCredentials(req.body.email, req.body.password)
     const token = await user.generateAuthToken()
-    res.cookie('jwt', token)
+    res.cookie('jwt', token,  {maxAge: 2 * 60 * 60 * 1000})
     res.redirect('/home')
   } catch (e) {
       res.render('login', {
@@ -134,10 +134,14 @@ app.post('/billing/:token', auth, upload.single('image'), async(req, res) => {
 
 var products = []
 var count = 0
-var totalQty = 0
 
 // Add Product Page
 app.get('/addproduct', auth, (req, res) => {
+  var totalQty = 0
+  if(req.session.list) {
+    const list = new List(req.session.list)
+    totalQty = list.totalQty
+  }
   res.render('addproduct', {
     products,
     totalQty
@@ -159,7 +163,6 @@ app.post('/addproduct', auth, upload.single('image'), async(req, res) => {
     };
   const response = await visualRecognition.analyze(params)
   const objects = response.result.images[0].objects.collections[0].objects
-  console.log(objects)
   for (const comp of objects) {
     const item = await productInfo.findOne({product: comp.object})
     var flag = true
@@ -180,6 +183,11 @@ app.post('/addproduct', auth, upload.single('image'), async(req, res) => {
       })
     } 
   }
+  var totalQty = 0
+  if(req.session.list) {
+    const list = new List(req.session.list)
+    totalQty = list.totalQty
+  }
   res.render('addproduct', {
     products,
     totalQty
@@ -196,23 +204,46 @@ app.get('/addtolist/:id', auth, (req, res) => {
       console.log('Error')
     }
     const qty = parseInt(req.query.qty)
-    console.log(qty)
     list.add(product, product.id, qty)
     req.session.list = list
-    console.log(req.session.list)
     totalQty = req.session.list.totalQty
     res.redirect('/addproduct')
   })
 })
 
+
+// Remove from list
+app.get('/removefromlist/:id', auth, (req, res) => {
+  var productId = req.params.id;
+  var list = new List(req.session.list)
+  list.remove(productId)
+  req.session.list = list
+  res.render('list', {
+    products: list.generateArray()
+  })
+})
+
+// Update list
+app.get('/updatestock', auth, (req, res) => {
+  const list = new List(req.session.list)
+  const listArray = list.generateArray()
+  listArray.forEach(async (comp) => {
+    const id = comp.item._id
+    const product = await productInfo.findById({id})
+    console.log(product)
+    product.currentStock += comp.qty
+    await product.save()
+  })
+})
+
 app.get('/list', auth, (req, res) => {
-  if(!req.session.cart) {
+  if(!req.session.list) {
     return res.render('list')
   }
   var list = new List(req.session.list)
+  const products = list.generateArray()
   res.render('list', {
-    products: list.generateArray(), 
-    totalPrice: cart.totalPrice
+    products
   })
 })
 
