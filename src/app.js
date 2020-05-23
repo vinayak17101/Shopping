@@ -13,6 +13,7 @@ require('./db/mongoose')
 const User = require('./models/user')
 const auth = require('./middleware/auth')
 const productInfo = require('./models/productInfo')
+const Customer = require('./models/customer')
 const encode = require('./models/encode')
 const Cart = require('./models/cart')
 const List = require('./models/list')
@@ -106,8 +107,38 @@ app.get('/home', auth, (req, res) => {
 })
 
 // Customer Recognition
+
 app.get('/customer', auth, (req, res) => {
   res.render('customer')
+})
+
+app.post('/customer', auth, upload.single('image'), async(req, res) => {
+  await sharp(req.file.buffer).resize({width: 250, height: 250}).toFile('image.png')
+    const imagePath = path.join(__dirname, '../image.png')
+    const params = {
+        imagesFile: [
+          {
+            data: fs.createReadStream(imagePath),
+            contentType: 'image/jpeg',
+          }
+        ],
+        collectionIds: ['05b8716d-e472-41d2-8e08-34cf742c6dce'],
+        features: ['objects'],
+      };
+    const response = await visualRecognition.analyze(params)
+    const objects = response.result.images[0].objects.collections[0].objects
+    const ind = await Customer.findOne({name: objects[0].object})
+    var bytes = new Uint8Array(ind.image.buffer);
+    src = 'data:image/png;base64,'+encode(bytes)
+    var individual = {
+      name: ind.name,
+      email: ind.email,
+      credit: ind.credit,
+      debit: ind.debit,
+      loyalityPoints: ind.loyalityPoints,
+      image: src
+    }
+    res.render('customer', individual)
 })
 
 // Billing Page
@@ -115,7 +146,7 @@ app.get('/billing', auth, (req, res) => {
   res.render('form')
 })
 
-app.post('/billing/:token', auth, upload.single('image'), async(req, res) => {
+app.post('/billing', auth, upload.single('image'), async(req, res) => {
     await sharp(req.file.buffer).resize({width: 250, height: 250}).toFile('image.png')
     const imagePath = path.join(__dirname, '../image.png')
     const params = {
@@ -128,15 +159,8 @@ app.post('/billing/:token', auth, upload.single('image'), async(req, res) => {
         collectionIds: ['663179e7-8856-4872-b255-75bdfc169b1a'],
         features: ['objects'],
       };
-    fs.unlinkSync(imagePath)
-    console.log('Ho')
-    visualRecognition.analyze(params).then(response => {
-        const objects = response.result.images[0].objects.collections[0].objects
-        console.log(objects)
-        res.render('form')
-    }).catch(err => {
-        console.log('error: ', err);
-    })
+      const response = await visualRecognition.analyze(params)
+      const objects = response.result.images[0].objects.collections[0].objects
 })
 
 var products = []
@@ -284,15 +308,15 @@ app.get('/customerImage', (req, res) => {
 })
 
 app.post('/customerImage', upload.single('image'), async(req, res) => {
-  const pimage = await sharp(req.file.buffer).resize({width: 150, height: 150}).png().toBuffer()
-  const pImage = new productInfo({
-    product: req.body.pname,
-    image: pimage,
+  const cimage = await sharp(req.file.buffer).resize({width: 350, height: 350}).png().toBuffer()
+  const customer = new Customer({
+    name: req.body.pname,
+    image: cimage,
     email: req.body.email,
     credit: 0,
     debit: 0,
     loyalityPoints: 0
   })
-  await pImage.save()
+  await customer.save()
   res.render('add-image')
 })
