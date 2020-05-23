@@ -4,7 +4,7 @@ function logout() {
     window.location.href = url
 }
 function newbill() {
-    url = '/billing/' + token
+    url = '/customer'
     window.location.href = url
 }
 document.getElementById('add-new-product').href = '/addproduct'

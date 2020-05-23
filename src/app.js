@@ -6,6 +6,7 @@ const hbs = require('hbs')
 const multer = require('multer')
 const sharp = require('sharp')
 const cookieParser = require('cookie-parser')
+var flash = require('express-flash')
 const session = require('express-session')
 const visualRecognition = require('./models/visual-recognition')
 require('./db/mongoose')
@@ -35,6 +36,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 app.use(cookieParser())
 app.use(session({secret: 'thisisme', saveUninitialized: true, resave: true}))
+app.use(flash())
 
 // Startup Page
 app.get('/', (req, res) => {
@@ -103,8 +105,13 @@ app.get('/home', auth, (req, res) => {
   res.render('home')
 })
 
+// Customer Recognition
+app.get('/customer', auth, (req, res) => {
+  res.render('customer')
+})
+
 // Billing Page
-app.get('/billing/:token', auth, (req, res) => {
+app.get('/billing', auth, (req, res) => {
   res.render('form')
 })
 
@@ -229,11 +236,11 @@ app.get('/updatestock', auth, (req, res) => {
   const listArray = list.generateArray()
   listArray.forEach(async (comp) => {
     const id = comp.item._id
-    const product = await productInfo.findById({id})
-    console.log(product)
+    const product = await productInfo.findById(id)
     product.currentStock += comp.qty
     await product.save()
   })
+  res.redirect('/home')
 })
 
 app.get('/list', auth, (req, res) => {
@@ -268,4 +275,24 @@ app.post('/image', upload.single('image'), async(req, res) => {
 
 app.listen(port, () => {
     console.log('Server is up on port ', port)
+})
+
+
+// Add Customer Image
+app.get('/customerImage', (req, res) => {
+  res.render('customer-image')
+})
+
+app.post('/customerImage', upload.single('image'), async(req, res) => {
+  const pimage = await sharp(req.file.buffer).resize({width: 150, height: 150}).png().toBuffer()
+  const pImage = new productInfo({
+    product: req.body.pname,
+    image: pimage,
+    email: req.body.email,
+    credit: 0,
+    debit: 0,
+    loyalityPoints: 0
+  })
+  await pImage.save()
+  res.render('add-image')
 })
