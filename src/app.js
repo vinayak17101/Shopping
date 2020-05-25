@@ -138,12 +138,24 @@ app.post('/customer', auth, upload.single('image'), async(req, res) => {
       loyalityPoints: ind.loyalityPoints,
       image: src
     }
+    req.session.customer = individual
     res.render('customer', individual)
 })
 
+var productsBill = []
+var countBill = 0
+
 // Billing Page
 app.get('/billing', auth, (req, res) => {
-  res.render('form')
+  var totalQty = 0
+  if(req.session.cart) {
+    const cart = new Cart(req.session.cart)
+    totalQty = cart.totalQty
+  }
+  res.render('form', {
+    productsBill,
+    totalQty
+  })
 })
 
 app.post('/billing', auth, upload.single('image'), async(req, res) => {
@@ -159,8 +171,107 @@ app.post('/billing', auth, upload.single('image'), async(req, res) => {
         collectionIds: ['663179e7-8856-4872-b255-75bdfc169b1a'],
         features: ['objects'],
       };
-      const response = await visualRecognition.analyze(params)
-      const objects = response.result.images[0].objects.collections[0].objects
+  const response = await visualRecognition.analyze(params)
+  const objects = response.result.images[0].objects.collections[0].objects
+  for (const comp of objects) {
+    const item = await productInfo.findOne({product: comp.object})
+    var flag = true
+    for (const c of productsBill) {
+      if(c.id == item.id) {
+        flag = false
+      }
+    }
+    if(flag == true) {
+      var bytes = new Uint8Array(item.image.buffer);
+      src = 'data:image/png;base64,'+encode(bytes);
+      productsBill.push({
+        index: countBill++,
+        id: item.id,
+        name: item.product,
+        image: src,
+        price: item.price
+      })
+    } 
+  }
+  var totalQty = 0
+  if(req.session.cart) {
+    const cart = new Cart(req.session.cart)
+    totalQty = cart.totalQty
+  }
+  res.render('form', {
+    productsBill,
+    totalQty
+  })
+})
+
+app.get('/cart', auth, (req, res) => {
+  if(!req.session.cart) {
+    return res.render('cart')
+  }
+  var cart = new Cart(req.session.cart)
+  const productsBill = cart.generateArray()
+  var totalPrice = 0
+  if(req.session.totalPrice) {
+    totalPrice = req.session.totalPrice
+  } else {
+    for(const product of productsBill) {
+      totalPrice += product.price
+    }
+  }
+  const customer = req.session.customer
+  res.render('cart', {
+    productsBill,
+    totalPrice,
+    customer
+  })
+})
+
+app.get('/addtocart/:id', auth, (req, res) => {
+  var productId = req.params.id;
+  var cart = new Cart(req.session.cart ? req.session.cart : {items: {}})
+  productInfo.findById(productId, function(err, product) {
+    if(err) {
+      console.log('Error')
+    }
+    const qty = parseInt(req.query.qty)
+    cart.add(product, product.id, qty)
+    req.session.cart = cart
+    res.redirect('/billing')
+  })
+})
+
+app.get('/removefromcart/:id', auth, (req, res) => {
+  var productId = req.params.id;
+  var cart = new Cart(req.session.cart)
+  cart.remove(productId)
+  req.session.cart = cart
+  res.render('cart', {
+    productsBill: cart.generateArray()
+  })  
+})
+
+app.get('/finalbill', auth, async(req, res) => {
+  var opt = req.query.opt
+  console.log(opt)
+  var totalPrice = req.query.totalPrice
+  const customer = await Customer.findOne({email: req.session.customer.email})
+  console.log(customer)
+  if(opt == 'debit')
+  {
+    if(totalPrice <= customer.debit)
+    {
+      customer.debit -= totalPrice
+      await customer.save()
+      req.session.totalPrice = 0
+      res.redirect('/cart')
+    } else {
+      totalPrice -= customer.debit
+      customer.debit = 0
+      await customer.save()
+      req.session.totalPrice = totalPrice
+      res.redirect('/cart')
+    }
+  }
 })
 
 var products = []
