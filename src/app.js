@@ -343,8 +343,13 @@ app.get('/finalbill', auth, async(req, res) => {
     var items = []
     cart = cart.generateArray()
     for(const item of cart) {
-      const product = productInfo.findOne({owner: user.email, product: item.item.product})
+      const product = await productInfo.findOne({owner: req.user.email, product: item.item.product})
+      if(product.currentStock < item.qty) {
+        throw new Error('Stock not available!')
+      }
+      console.log(product.currentStock)
       product.currentStock -= item.qty
+      await product.save()
       items.push({
         product: item.item.product,
         qty: item.qty,
