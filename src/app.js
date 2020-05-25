@@ -343,6 +343,8 @@ app.get('/finalbill', auth, async(req, res) => {
     var items = []
     cart = cart.generateArray()
     for(const item of cart) {
+      const product = productInfo.findOne({owner: user.email, product: item.item.product})
+      product.currentStock -= item.qty
       items.push({
         product: item.item.product,
         qty: item.qty,
@@ -353,7 +355,7 @@ app.get('/finalbill', auth, async(req, res) => {
     customer.loyalityPoints += loyalityPoints
     await customer.save()
     var transaction = new Transaction({
-      customer: req.session.customer.name,
+      customer: req.session.customer.email,
       products: items
     })
     await transaction.save()
@@ -486,6 +488,7 @@ app.get('/image', (req, res) => {
 app.post('/image', upload.single('image'), async(req, res) => {
   const pimage = await sharp(req.file.buffer).resize({width: 150, height: 150}).png().toBuffer()
   const pImage = new productInfo({
+    owner: req.body.email,
     product: req.body.pname,
     image: pimage,
     currentStock: 0,
