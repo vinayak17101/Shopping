@@ -73,6 +73,9 @@
                     <h5> <b>Debit Amount:</b> <span style="color: blue;">Rs. {{customer.debit}}</span></h5>
                     <h5> <b>Loyality Amount:</b> <span style="color: green;">Rs. {{customer.loyalityPoints}}</span></h5>
                     <br>
+                    <input type="number" id='debit' size="4px">
+                    <a href="/finalbill?opt=addDebit&money=" id="debitLink"><button type="button" class="btn btn-info" onclick="adddebit()">Add Debit Money</button></a>
+                    <br>
                 </div>
             </div>
             <hr>
@@ -93,7 +96,7 @@
             <br>
             <div class="row">
                 <div class="col-sm-2 col-md-4">
-                    <a href="/finalbill?opt=loyality&totalPrice={{totalPrice}}"><button type="button" class="btn btn-primary">Use Loyality Points</button></a>
+                    <a href="/finalbill?opt=loyality&totalPrice={{totalPrice}}"><button type="button" class="btn btn-primary">Apply Loyality Points</button></a>
                 </div>
                 <div class="col-sm-2 col-md-4">
                     <a href="/finalbill?opt=checkout&totalPrice={{totalPrice}}"><button type="button" class="btn btn-primary">Checkout</button></a>
@@ -108,3 +111,10 @@
             </div>
         </div>
         {{/if}}
+
+<script>
+    function adddebit() {
+        const money = document.getElementById('debit').value
+        document.getElementById('debitLink').href += money
+    }
+</script>

@@ -17,6 +17,7 @@ const Customer = require('./models/customer')
 const encode = require('./models/encode')
 const Cart = require('./models/cart')
 const List = require('./models/list')
+const Transaction = require('./models/transaction')
 
 // Defining the class object
 const upload = multer()
@@ -133,9 +134,9 @@ app.post('/customer', auth, upload.single('image'), async(req, res) => {
     var individual = {
       name: ind.name,
       email: ind.email,
-      credit: ind.credit,
-      debit: ind.debit,
-      loyalityPoints: ind.loyalityPoints,
+      credit: Math.round(ind.credit),
+      debit: Math.round(ind.debit),
+      loyalityPoints: Math.round(ind.loyalityPoints),
       image: src
     }
     req.session.customer = individual
@@ -206,6 +207,8 @@ app.post('/billing', auth, upload.single('image'), async(req, res) => {
 
 app.get('/cart', auth, (req, res) => {
   if(!req.session.cart) {
+    console.log(req.session.cart)
+    req.session.totalPrice = undefined
     return res.render('cart')
   }
   var cart = new Cart(req.session.cart)
@@ -218,6 +221,7 @@ app.get('/cart', auth, (req, res) => {
       totalPrice += product.price
     }
   }
+  req.session.totalPrice = totalPrice
   const customer = req.session.customer
   res.render('cart', {
     productsBill,
@@ -245,32 +249,116 @@ app.get('/removefromcart/:id', auth, (req, res) => {
   var cart = new Cart(req.session.cart)
   cart.remove(productId)
   req.session.cart = cart
+  const customer = req.session.customer
+  var totalPrice = 0
+  var cart = new Cart(req.session.cart)
+  const productsBill = cart.generateArray()
+  for(const product of productsBill) {
+    totalPrice += product.price
+  }
+  if(totalPrice === 0) {
+    req.session.totalPrice = undefined
+  }
   res.render('cart', {
-    productsBill: cart.generateArray()
+    productsBill,
+    customer,
+    totalPrice
   })  
 })
 
 app.get('/finalbill', auth, async(req, res) => {
   var opt = req.query.opt
-  console.log(opt)
   var totalPrice = req.query.totalPrice
   const customer = await Customer.findOne({email: req.session.customer.email})
-  console.log(customer)
   if(opt == 'debit')
   {
     if(totalPrice <= customer.debit)
     {
       customer.debit -= totalPrice
+      customer.debit = Math.round(customer.debit)
       await customer.save()
-      req.session.totalPrice = 0
-      res.redirect('/cart')
+      res.redirect('/finalbill?opt=checkout')
     } else {
       totalPrice -= customer.debit
       customer.debit = 0
       await customer.save()
+      req.session.customer.debit = 0
+      req.session.totalPrice = Math.round(totalPrice)
+      res.redirect('/cart')
+    }
+  }
+  if(opt == 'addDebit')
+  {
+    const money = parseInt(req.query.money)
+    if(customer.credit > 0)
+    {
+      if(customer.credit <= money)
+      {
+        customer.debit += money - customer.credit
+        customer.credit = 0
+        req.session.customer.credit = 0
+        req.session.customer.debit = Math.round(customer.debit)
+        await customer.save()
+      } else {
+        customer.credit -= money
+        req.session.customer.credit = Math.round(customer.credit)
+        customer.credit = Math.round(customer.credit)
+        await customer.save()
+      }
+    } else {
+      customer.debit += money
+      customer.debit = Math.round(customer.debit)
+      await customer.save()
+      req.session.customer.debit = Math.round(req.session.customer.debit + money)
+    }
+    res.redirect('/cart')
+  }
+  if(opt == 'credit')
+  {
+    customer.credit += req.session.totalPrice
+    customer.credit = Math.round(customer.credit)
+    await customer.save()
+    res.redirect('/finalbill?opt=checkout')
+  }
+  if(opt == 'loyality')
+  {
+    if(totalPrice <= customer.loyalityPoints)
+    {
+      customer.loyalityPoints -= totalPrice
+      customer.loyalityPoints = Math.round(customer.loyalityPoints)
+      await customer.save()
+      res.redirect('/finalbill?opt=checkout')
+    } else {
+      totalPrice = Math.round(totalPrice - customer.loyalityPoints)
+      customer.loyalityPoints = 0
+      await customer.save()
+      req.session.customer.loyalityPoints = 0
       req.session.totalPrice = totalPrice
       res.redirect('/cart')
     }
+  }
+  if(opt == 'checkout')
+  {
+    var cart = new Cart(req.session.cart)
+    var items = []
+    cart = cart.generateArray()
+    for(const item of cart) {
+      items.push({
+        product: item.item.product,
+        qty: item.qty,
+        price: item.price
+      })
+    }
+    const loyalityPoints = Math.round(req.session.totalPrice * 0.05)
+    customer.loyalityPoints += loyalityPoints
+    await customer.save()
+    var transaction = new Transaction({
+      customer: req.session.customer.name,
+      products: items
+    })
+    await transaction.save()
+    req.session.totalPrice = undefined
+    res.redirect('/home')
   }
 })
 
