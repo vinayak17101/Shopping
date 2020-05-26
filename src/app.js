@@ -526,5 +526,5 @@ app.post('/customerImage', upload.single('image'), async(req, res) => {
     loyalityPoints: 0
   })
   await customer.save()
-  res.render('add-image')
+  res.render('customer-image')
 })
