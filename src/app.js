@@ -528,3 +528,13 @@ app.post('/customerImage', auth, upload.single('image'), async(req, res) => {
   await customer.save()
   res.render('customer-image')
 })
+
+
+// View all customer
+
+app.get('/viewcustomers', auth, async(req, res) => {
+  await req.user.populate({
+    path: 'customers'
+  }).execPopulate()
+  console.log(req.user.customers)
+})

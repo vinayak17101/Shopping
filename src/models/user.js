@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const Customer = require('./customer')
+const Product = require('./productInfo')
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -66,6 +68,18 @@ userSchema.pre('save', async function (next) {
     }
 
     next()
+})
+
+userSchema.virtual('customers', {
+    ref: 'Customer',
+    localField: '_id',
+    foreignField: 'owner'
+})
+
+userSchema.virtual('products', {
+    ref: 'Product',
+    localField: '_id',
+    foreignField: 'owner'
 })
 
 const User = mongoose.model('User', userSchema)
