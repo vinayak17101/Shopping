@@ -517,6 +517,7 @@ app.get('/customerImage', (req, res) => {
 app.post('/customerImage', upload.single('image'), async(req, res) => {
   const cimage = await sharp(req.file.buffer).resize({width: 350, height: 350}).png().toBuffer()
   const customer = new Customer({
+    owner: req.body.owner,
     name: req.body.pname,
     image: cimage,
     email: req.body.email,

@@ -1,6 +1,10 @@
 const mongoose = require('mongoose')
 
 const customerSchema = new mongoose.Schema({
+    owner: {
+        type: String,
+        require: true
+    },
     name: {
         type: String,
         require: true
