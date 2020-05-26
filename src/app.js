@@ -541,7 +541,20 @@ app.get('/viewcustomers', auth, async(req, res) => {
   await req.user.populate({
     path: 'customers'
   }).execPopulate()
-  for(const customer in req.user.customers) {
-
+  var customers = []
+  for(const customer of req.user.customers) {
+    var bytes = new Uint8Array(customer.image.buffer);
+    src = 'data:image/png;base64,'+encode(bytes);
+    customers.push({
+      name: customer.name,
+      email: customer.email,
+      bills: customer.bills,
+      value: customer.value,
+      loyalityPoints: customer.loyalityPoints,
+      image: src
+    })
+    res.render('viewcustomer', {
+      customers 
+    })
   }
 })
