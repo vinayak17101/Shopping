@@ -190,7 +190,8 @@ app.post('/billing', auth, upload.single('image'), async(req, res) => {
         id: item.id,
         name: item.product,
         image: src,
-        price: item.price
+        price: item.price,
+        stock: item.currentStock
       })
     } 
   }
@@ -343,11 +344,10 @@ app.get('/finalbill', auth, async(req, res) => {
     var items = []
     cart = cart.generateArray()
     for(const item of cart) {
-      const product = await productInfo.findOne({owner: req.user.email, product: item.item.product})
+      const product = await productInfo.findOne({owner: req.user._id, product: item.item.product})
       if(product.currentStock < item.qty) {
         throw new Error('Stock not available!')
       }
-      console.log(product.currentStock)
       product.currentStock -= item.qty
       await product.save()
       items.push({
@@ -358,6 +358,8 @@ app.get('/finalbill', auth, async(req, res) => {
     }
     const loyalityPoints = Math.round(req.session.totalPrice * 0.05)
     customer.loyalityPoints += loyalityPoints
+    customer.bills += 1
+    customer.value += req.session.totalPrice
     await customer.save()
     var transaction = new Transaction({
       customer: req.session.customer.email,
@@ -416,7 +418,8 @@ app.post('/addproduct', auth, upload.single('image'), async(req, res) => {
         id: item.id,
         name: item.product,
         image: src,
-        price: item.price
+        price: item.price,
+        stock: item.currentStock
       })
     } 
   }
@@ -523,7 +526,9 @@ app.post('/customerImage', auth, upload.single('image'), async(req, res) => {
     email: req.body.email,
     credit: 0,
     debit: 0,
-    loyalityPoints: 0
+    loyalityPoints: 0,
+    bills: 0,
+    value: 0
   })
   await customer.save()
   res.render('customer-image')
@@ -536,5 +541,7 @@ app.get('/viewcustomers', auth, async(req, res) => {
   await req.user.populate({
     path: 'customers'
   }).execPopulate()
-  console.log(req.user.customers)
+  for(const customer in req.user.customers) {
+
+  }
 })

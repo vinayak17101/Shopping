@@ -26,6 +26,12 @@ const customerSchema = new mongoose.Schema({
     },
     debit: {
         type: Number
+    },
+    bills: {
+        type: Number
+    },
+    value: {
+        type: Number
     }
 })
 
