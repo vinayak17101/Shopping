@@ -2,12 +2,13 @@ const mongoose = require('mongoose')
 
 const productInfoSchema = new mongoose.Schema({
     owner: {
-        type: String,
-        require: true
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'
     },
     product: {
         type: String,
-        require: true,
+        required: true,
         unique: true,
         trim: true
     },
@@ -16,11 +17,11 @@ const productInfoSchema = new mongoose.Schema({
     },
     currentStock: {
         type: Number,
-        require: true
+        required: true
     }, 
     price: {
         type: Number,
-        require: true
+        required: true
     }
 })
 

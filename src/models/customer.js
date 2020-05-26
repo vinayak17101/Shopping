@@ -2,12 +2,13 @@ const mongoose = require('mongoose')
 
 const customerSchema = new mongoose.Schema({
     owner: {
-        type: String,
-        require: true
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'
     },
     name: {
         type: String,
-        require: true
+        required: true
     },
     image: {
         type: Buffer
@@ -15,7 +16,7 @@ const customerSchema = new mongoose.Schema({
     email: {
         type: String,
         unique: true, 
-        require: true
+        required: true
     },
     loyalityPoints: {
         type: Number
