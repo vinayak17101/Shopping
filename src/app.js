@@ -680,3 +680,37 @@ app.get('/viewbasket', auth, async(req, res) => {
     products
   })
 })
+
+// Forecast Demands
+app.get('/forecastdemand', auth, async(req, res) => {
+  res.render('forecast')
+})
+
+app.post('/forecastdemand', auth, async(req, res) => {
+  const item = await productInfo.findOne({product: req.body.product})
+  await req.user.populate({
+    path: 'transactions',
+    options: { sort: { 'createdAt' : -1} }
+  }).execPopulate()
+  const date = new Date()
+  transactions = []
+  var count = 0
+  for(const transaction of req.user.transactions) {
+    if(date.getDate() == transaction.createdAt.getDate() || date.getDate() == transaction.createdAt.getDate() - 1)
+    {
+      for(const product of transaction.products) {
+        if(product.product === item.product) {
+          count += product.qty
+        }
+      }
+    } else {
+      break
+    }
+  }
+  const forecastFactor = Math.random() * (1.3 - 0.75) + 0.75
+  var forecasted = Math.round(count * req.body.days * forecastFactor)
+  if(forecasted === 0) {
+    forecasted = Math.round(Math.round(Math.random() * (15 - 5) + 5) * req.body.days * forecastFactor)
+  }
+  console.log(forecasted)
+})

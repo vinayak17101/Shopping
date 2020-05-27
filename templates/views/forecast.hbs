@@ -1,0 +1,32 @@
+<html>
+    <head>
+        <link rel="icon" href="./img/title.png">
+        <title>Checkout</title>
+    </head>
+    <body>
+        {{>userHeader}}
+        <link rel="stylesheet" href="/css/addproduct.css">
+        <div id="content-wrapper">
+            <div class="container-fluid">
+            <!-- Breadcrumbs-->
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                <a href="/home">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                <a href="/customer">Customer</a>
+                </li>
+                <li class="breadcrumb-item active">Billing</li>
+            </ol>
+            <br>
+            <h2>Forecast Product Demand</h2>
+            <br>
+            <div class="container-fluid">
+                <form method="POST" action="/forecastdemand" id="forecast-form">
+                    <label for="product">Product Name: </label>
+                    <input type="text" name="product" id="product" placeholder="Enter the product name"> <br>
+                    <label for="product">Number of Days: </label>
+                    <input type="text" name="days" id="days" placeholder="Enter days for forecasting">
+                    <span style="margin: 30px;"><button type="submit" class="btn btn-success">Forecast</button></span>
+                </form>
+            </div>
