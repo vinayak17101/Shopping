@@ -593,21 +593,50 @@ app.get('/credithistory', auth, async(req, res) => {
     path: 'customers'
   }).execPopulate()
   // console.log(req.user.customers)
-  var creditCustomers = []
-  for(const user of req.user.customers) {
-    if(user.credit > 0) {
-      var bytes = new Uint8Array(user.image.buffer);
-      src = 'data:image/png;base64,'+encode(bytes);
-      creditCustomers.push({
-        name: user.name,
-        email: user.email,
-        image: src,
-        credit: user.credit,
-        value: user.value
-      })
+  if(req.user.customers) {
+    var creditCustomers = []
+    for(const user of req.user.customers) {
+      if(user.credit > 0) {
+        var bytes = new Uint8Array(user.image.buffer);
+        src = 'data:image/png;base64,'+encode(bytes);
+        creditCustomers.push({
+          name: user.name,
+          email: user.email,
+          image: src,
+          credit: user.credit,
+          value: user.value
+        })
+      }
     }
   }
   res.render('creditHistory', {
     creditCustomers
+  })
+})
+
+// View Debit History
+app.get('/debithistory', auth, async(req, res) => {
+  await req.user.populate({
+    path: 'customers'
+  }).execPopulate()
+  // console.log(req.user.customers)
+  if(req.user.customers) {
+    var debitCustomers = []
+    for(const user of req.user.customers) {
+      if(user.debit > 0) {
+        var bytes = new Uint8Array(user.image.buffer);
+        src = 'data:image/png;base64,'+encode(bytes);
+        debitCustomers.push({
+          name: user.name,
+          email: user.email,
+          image: src,
+          debit: user.debit,
+          value: user.value
+        })
+      }
+    }
+  }
+  res.render('debitHistory', {
+    debitCustomers
   })
 })
