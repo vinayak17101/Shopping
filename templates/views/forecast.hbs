@@ -23,10 +23,31 @@
             <br>
             <div class="container-fluid">
                 <form method="POST" action="/forecastdemand" id="forecast-form">
-                    <label for="product">Product Name: </label>
+                    <label style="margin-left: 15px;" for="product">Product Name: </label>
                     <input type="text" name="product" id="product" placeholder="Enter the product name"> <br>
                     <label for="product">Number of Days: </label>
                     <input type="text" name="days" id="days" placeholder="Enter days for forecasting">
                     <span style="margin: 30px;"><button type="submit" class="btn btn-success">Forecast</button></span>
                 </form>
             </div>
+            {{# if name}}
+            <br>
+            <br>
+            <br>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-2 col-md-1">
+                            <img src="{{image}}" style="width: 200px; height: 200px;margin-right: 50px">
+                        </div>
+                        <div class="col-sm-4 col-md-4" style="margin-left: 50px;">
+                            <br>
+                            <br>
+                            <h5> <b>Product Name:</b> {{name}}</h5>
+                            <h5> <b>Price:</b> {{price}}</h5>
+                            <h5> <b>Current Stock:</b> {{stock}} Units</h5>
+                            <h5> <b>Forecast for {{days}} Days:</b> <span style="color: green;"><i>{{forecasted}} Units</i></span></h5>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+            {{/if}}
