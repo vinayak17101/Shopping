@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const Customer = require('./customer')
+const customer = require('./customer')
 const Product = require('./productInfo')
 
 const userSchema = new mongoose.Schema({
@@ -77,7 +77,7 @@ userSchema.virtual('customers', {
 })
 
 userSchema.virtual('products', {
-    ref: 'Product',
+    ref: 'Product Info',
     localField: '_id',
     foreignField: 'owner'
 })

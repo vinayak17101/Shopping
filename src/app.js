@@ -367,6 +367,8 @@ app.get('/finalbill', auth, async(req, res) => {
     })
     await transaction.save()
     req.session.totalPrice = undefined
+    req.session.cart = undefined
+    productsBill = []
     res.redirect('/home')
   }
 })
@@ -473,6 +475,8 @@ app.get('/updatestock', auth, (req, res) => {
     product.currentStock += comp.qty
     await product.save()
   })
+  req.session.list = undefined
+  products = []
   res.redirect('/home')
 })
 
@@ -536,25 +540,74 @@ app.post('/customerImage', auth, upload.single('image'), async(req, res) => {
 
 
 // View all customer
-
 app.get('/viewcustomers', auth, async(req, res) => {
   await req.user.populate({
     path: 'customers'
   }).execPopulate()
-  var customers = []
-  for(const customer of req.user.customers) {
-    var bytes = new Uint8Array(customer.image.buffer);
-    src = 'data:image/png;base64,'+encode(bytes);
-    customers.push({
-      name: customer.name,
-      email: customer.email,
-      bills: customer.bills,
-      value: customer.value,
-      loyalityPoints: customer.loyalityPoints,
-      image: src
-    })
+  if(req.user.customers){
+    var customers = []
+    for(const customer of req.user.customers) {
+      var bytes = new Uint8Array(customer.image.buffer);
+      src = 'data:image/png;base64,'+encode(bytes);
+      customers.push({
+        name: customer.name,
+        email: customer.email,
+        bills: customer.bills,
+        value: customer.value,
+        loyalityPoints: customer.loyalityPoints,
+        image: src
+      })
+  }
     res.render('viewcustomer', {
       customers 
     })
   }
+})
+
+// View Inventory
+app.get('/inventoryreport', auth, async(req, res) => {
+  await req.user.populate({
+    path: 'products'
+  }).execPopulate()
+  if(req.user.products){
+    var products = []
+    for(const product of req.user.products) {
+      var bytes = new Uint8Array(product.image.buffer);
+      src = 'data:image/png;base64,'+encode(bytes);
+      products.push({
+        name: product.product,
+        currentStock: product.currentStock,
+        image: src,
+        price: product.price
+      })
+  }
+    res.render('inventory', {
+      products 
+    })
+  }
+})
+
+// View Credit History
+app.get('/credithistory', auth, async(req, res) => {
+  await req.user.populate({
+    path: 'customers'
+  }).execPopulate()
+  // console.log(req.user.customers)
+  var creditCustomers = []
+  for(const user of req.user.customers) {
+    if(user.credit > 0) {
+      var bytes = new Uint8Array(user.image.buffer);
+      src = 'data:image/png;base64,'+encode(bytes);
+      creditCustomers.push({
+        name: user.name,
+        email: user.email,
+        image: src,
+        credit: user.credit,
+        value: user.value
+      })
+    }
+  }
+  res.render('creditHistory', {
+    creditCustomers
+  })
 })

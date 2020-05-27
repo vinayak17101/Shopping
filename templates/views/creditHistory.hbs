@@ -1,0 +1,97 @@
+<link href="/css/bootstrap.css" rel="stylesheet">
+{{>userHeader}}
+<div id="content-wrapper">
+    <div class="container-fluid">
+    <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+            <a href="/home">Home</a>
+            </li>
+            <li class="breadcrumb-item active">Credit History</li>
+        </ol>
+        <div class='container-fluid'>
+            <div class="row">
+                
+            </div>
+        </div>
+        <div class='container-fluid'>
+            {{# if creditCustomers}}
+            <br>
+            <h1>Credit Report</h1>
+            <br>
+            <div class="row">
+                <div class="col-sm-6 col-md-12 col-md-offset-3 col-sm-offset-3">
+                    <ul class="list-group-item">
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-sm-2 col-md-2">
+                                    <strong>
+                                        <h4>Avatar</h4>
+                                    </strong>
+                                </div>
+                                <div class="col-sm-2 col-md-3">
+                                    <strong>
+                                        <h4>Customer Name</h4>
+                                    </strong>
+                                </div>
+                                <div class="col-sm-4 col-md-2">
+                                    <strong>
+                                        <h4>Credit Amount</h4>
+                                    </strong>
+                                </div>
+                                <div class="col-sm-4 col-md-2">
+                                    <strong>
+                                        <h4>Total Value</h4>
+                                    </strong>
+                                </div>
+                                <div class="col-sm-4 col-md-3">
+                                    <strong>
+                                        <h4>Contact Details</h4>
+                                    </strong>
+                                </div>
+                            </div>
+                        </li>
+                        {{# each creditCustomers}}
+                         <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-sm-2 col-md-2">
+                                    <img src="{{this.image}}" style="width: 100px; heigth: 100px;">
+                                </div>
+                                <div class="col-sm-2 col-md-3">
+                                    <br>
+                                    <strong>
+                                        <h5>{{this.name}}</h5>
+                                    </strong>
+                                </div>
+                                <div class="col-sm-4 col-md-2">
+                                    <br>
+                                    <strong>
+                                        <h5><span style="color: red; margin: 50px;">Rs. {{this.credit}}</span></h5>
+                                    </strong>
+                                </div>
+                                <div class="col-sm-4 col-md-2">
+                                    <br>
+                                    <strong>
+                                        <h5><span style="padding-left: 30px;">Rs. {{this.value}}</span></h5>
+                                    </strong>
+                                </div>
+                                <div class="col-sm-4 col-md-2">
+                                    <br>
+                                    <strong>
+                                        <h5>{{this.email}}</h5>
+                                    </strong>
+                                </div>
+                            </div>
+                        </li>
+                        {{/each}}
+                    </ul>
+                </div>
+            </div>
+            {{ else }}
+            <div class="row">
+                <div class="col-sm-6 col-md-6 col-md-offset-3 col-sm-offset-3">
+                    <h2>No Customers with Credit Money</h2>
+                </div>
+            </div>
+        </div>
+        {{/if}}

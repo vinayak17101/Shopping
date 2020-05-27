@@ -1,0 +1,88 @@
+<link href="/css/bootstrap.css" rel="stylesheet">
+{{>userHeader}}
+<div id="content-wrapper">
+    <div class="container-fluid">
+    <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+            <a href="/home">Home</a>
+            </li>
+            <li class="breadcrumb-item active">Inventory Reports</li>
+        </ol>
+        <div class='container-fluid'>
+            <div class="row">
+                
+            </div>
+        </div>
+        <div class='container-fluid'>
+            {{# if products}}
+            <br>
+            <h1>Your Inventory</h1>
+            <br>
+            <div class="row">
+                <div class="col-sm-6 col-md-12 col-md-offset-3 col-sm-offset-3">
+                    <ul class="list-group-item">
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-sm-2 col-md-3">
+                                    <strong>
+                                        <h4>Product Image</h4>
+                                    </strong>
+                                </div>
+                                <div class="col-sm-2 col-md-3">
+                                    <strong>
+                                        <h4>Product Name</h4>
+                                    </strong>
+                                </div>
+                                <div class="col-sm-4 col-md-3">
+                                    <strong>
+                                        <h4>Product Price</h4>
+                                    </strong>
+                                </div>
+                                <div class="col-sm-4 col-md-2">
+                                    <strong>
+                                        <h4>Current Stock</h4>
+                                    </strong>
+                                </div>
+                        </li>
+                        {{# each products}}
+                         <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-sm-2 col-md-3">
+                                    <img src="{{this.image}}" style="width: 160px; heigth: 160px;">
+                                </div>
+                                <div class="col-sm-2 col-md-3">
+                                    <br>
+                                    <br>
+                                    <strong>
+                                        <h5><span style="padding-left: 10px;">{{this.name}}</span></h5>
+                                    </strong>
+                                </div>
+                                <div class="col-sm-4 col-md-3">
+                                    <br>
+                                    <br>
+                                    <strong>
+                                        <h5><span style="padding-left: 50px;">Rs. {{this.price}}</span></h5>
+                                    </strong>
+                                </div>
+                                <div class="col-sm-4 col-md-3">
+                                    <br>
+                                    <br>
+                                    <strong>
+                                        <h5><span style="padding-left: 50px;">{{this.currentStock}}</span></h5>
+                                    </strong>
+                                </div>
+                            </div>
+                        </li>
+                        {{/each}}
+                    </ul>
+                </div>
+            </div>
+            {{ else }}
+            <div class="row">
+                <div class="col-sm-6 col-md-6 col-md-offset-3 col-sm-offset-3">
+                    <h2>No Products added</h2>
+                </div>
+            </div>
+        </div>
+        {{/if}}
