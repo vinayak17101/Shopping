@@ -723,3 +723,14 @@ app.post('/forecastdemand', auth, async(req, res) => {
     days: req.body.days
   })
 })
+
+
+// Contact Us
+app.get('/contact', (req, res) => {
+  res.render('contactus')
+})
+
+// User Profile 
+app.get('/userprofile', auth, (req, res) => {
+  res.render('userprofile')
+})

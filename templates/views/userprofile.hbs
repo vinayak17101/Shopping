@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="icon" href="./img/title.png">
+        <title>Checkout</title>
+    </head>
+    <body>
+        {{>userHeaderBill}}
+        <link rel="stylesheet" href="/css/addproduct.css">
+        <div id="content-wrapper">
+            <div class="container-fluid">
+            <!-- Breadcrumbs-->
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                <a href="/home">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                <a href="/customer">Customer</a>
+                </li>
+                <li class="breadcrumb-item active">Billing</li>
+            </ol>
+            <br>
+            <h2>Upload the checkout image</h2>
+            <br>
+            <div class="container-fluid">
+                <form method="POST" enctype="multipart/form-data" id="image-form">
+                    <input type="file" name="image">
+                    <button type="submit" class="btn btn-success">Upload</button>
+                </form>
+            </div>
+            <br>
+            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-sm-2 col-md-3">
+                                        <img src="{{image}}">
+                                    </div>
+                                    <div class="col-sm-4 col-md-4">
+                                        <br>
+                                        <br>
+                                        <h4> <b>Name:</b> {{name}}</h4>
+                                        <h4> <b>Email Address:</b> {{email}}</h4>
+                                        <h4> <b>Credit Amount:</b> <span style="color: red;">Rs. {{credit}}</span></h4>
+                                        <h4> <b>Debit Amount:</b> <span style="color: blue;">Rs. {{debit}}</span></h4>
+                                        <h4> <b>Loyality Amount:</b> <span style="color: green;">Rs. {{loyalityPoints}}</span></h4>
+                                        <br>
+                                        <center>
+                                            <a href="/billing"><button type="button" class="btn btn-info">Proceed</button></a>
+                                        </center>
+                                    </div>
+                                </div>
+                            </div>
