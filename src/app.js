@@ -365,7 +365,7 @@ app.get('/finalbill', auth, async(req, res) => {
     await customer.save()
     var transaction = new Transaction({
       owner: req.user._id,
-      customer: req.session.customer.email,
+      customer: req.session.customer.name,
       products: items,
       totalPrice
     })
@@ -652,16 +652,31 @@ app.get('/sales', auth, async(req, res) => {
   if(req.user.transactions) {
     var transactions = []
     for(const transaction of req.user.transactions) {
+      var parts = transaction.createdAt
+      parts = new String(parts)
+      parts = parts.split(' ')
+      var date = parts[2] + '-' + parts[1] + '-' +parts[3]
+      var time = parts[4]
       transactions.push({
         id: transaction._id,
         customer: transaction.customer,
         totalPrice: transaction.totalPrice,
-        time: transaction.createdAt
+        time: time,
+        date: date
       })
     }
   }
-  console.log(transactions)
   res.render('salesReport', {
     transactions
+  })
+})
+
+// View basket
+app.get('/viewbasket', auth, async(req, res) => {
+  const id = req.query.id
+  const transaction = await Transaction.findOne({owner: req.user._id, _id: id})
+  const products = transaction.products
+  res.render('basket', {
+    products
   })
 })

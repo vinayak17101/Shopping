@@ -7,7 +7,10 @@
             <li class="breadcrumb-item">
             <a href="/home">Home</a>
             </li>
-            <li class="breadcrumb-item active">Sales Report</li>
+            <li class="breadcrumb-item">
+            <a href="/sales">Sales Report</a>
+            </li>
+            <li class="breadcrumb-item active">Basket</li>
         </ol>
         <div class='container-fluid'>
             <div class="row">
@@ -15,66 +18,48 @@
             </div>
         </div>
         <div class='container-fluid'>
-            {{# if transactions}}
+            {{# if products}}
             <br>
-            <h1>Your Sales</h1>
+            <h1>Customer Basket</h1>
             <br>
             <div class="row">
-                <div class="col-sm-6 col-md-12 col-md-offset-3 col-sm-offset-3">
+                <div class="col-sm-6 col-md-8 col-md-offset-3 col-sm-offset-3">
                     <ul class="list-group-item">
                         <li class="list-group-item">
                             <div class="row">
-                                <div class="col-sm-2 col-md-3">
+                                <div class="col-sm-2 col-md-4">
                                     <strong>
-                                        <h4>Customer Name</h4>
+                                        <h4>Product Name</h4>
                                     </strong>
                                 </div>
-                                <div class="col-sm-4 col-md-2">
+                                <div class="col-sm-4 col-md-5">
                                     <strong>
-                                        <h4>Total Price</h4>
-                                    </strong>
-                                </div>
-                                <div class="col-sm-4 col-md-2">
-                                    <strong>
-                                        <h4>View Basket</h4>
+                                        <h4>Total Quantity</h4>
                                     </strong>
                                 </div>
                                 <div class="col-sm-4 col-md-3">
                                     <strong>
-                                        <h4><span style="margin-left: 60px;">Date</span></h4>
-                                    </strong>
-                                </div>
-                                <div class="col-sm-4 col-md-2">
-                                    <strong>
-                                        <h4><span style="padding-left: 10px;">Time</span></h4>
+                                        <h4>Total Cost</h4>
                                     </strong>
                                 </div>
                             </div>
                         </li>
-                        {{# each transactions}}
+                        {{# each products}}
                          <li class="list-group-item">
                             <div class="row">
-                                <div class="col-sm-2 col-md-3">
+                                <div class="col-sm-2 col-md-4">
                                     <strong>
-                                        <h5>{{this.customer}}</h5>
+                                        <h5>{{this.product}}</h5>
                                     </strong>
                                 </div>
-                                <div class="col-sm-4 col-md-2">
+                                <div class="col-sm-4 col-md-5">
                                     <strong>
-                                        <h5><span style="padding-left: 25px;">Rs. {{this.totalPrice}}</span></h5>
+                                        <h5><span style="padding-left: 70px;">{{this.qty}}</span></h5>
                                     </strong>
-                                </div>
-                                <div class="col-sm-4 col-md-2">
-                                    <a href="/viewbasket?id={{this.id}}"><span style="color: red; margin-left: 40px;">View</span></a>
                                 </div>
                                 <div class="col-sm-4 col-md-3">
                                     <strong>
-                                        <h5><span style="padding-left: 40px;">{{this.date}}</span></h5>
-                                    </strong>
-                                </div>
-                                <div class="col-sm-4 col-md-2">
-                                    <strong>
-                                        <h5>{{this.time}}</h5>
+                                        <h5><span style="padding-left: 20px;">Rs. {{this.price}}</span></h5>
                                     </strong>
                                 </div>
                             </div>
