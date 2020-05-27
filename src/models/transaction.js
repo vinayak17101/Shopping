@@ -1,13 +1,22 @@
 const mongoose = require('mongoose')
 
 const transactionSchema = new mongoose.Schema({
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'
+    },
     customer: {
         type: String,
-        require: true
+        required: true
     },
     products: {
         type: Array,
-        require: true
+        required: true
+    },
+    totalPrice: {
+        type: Number,
+        required: true
     }
 }, {
     timestamps: true

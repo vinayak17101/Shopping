@@ -343,6 +343,7 @@ app.get('/finalbill', auth, async(req, res) => {
     var cart = new Cart(req.session.cart)
     var items = []
     cart = cart.generateArray()
+    var totalPrice = 0
     for(const item of cart) {
       const product = await productInfo.findOne({owner: req.user._id, product: item.item.product})
       if(product.currentStock < item.qty) {
@@ -355,6 +356,7 @@ app.get('/finalbill', auth, async(req, res) => {
         qty: item.qty,
         price: item.price
       })
+      totalPrice += item.price
     }
     const loyalityPoints = Math.round(req.session.totalPrice * 0.05)
     customer.loyalityPoints += loyalityPoints
@@ -362,8 +364,10 @@ app.get('/finalbill', auth, async(req, res) => {
     customer.value += req.session.totalPrice
     await customer.save()
     var transaction = new Transaction({
+      owner: req.user._id,
       customer: req.session.customer.email,
-      products: items
+      products: items,
+      totalPrice
     })
     await transaction.save()
     req.session.totalPrice = undefined
@@ -592,7 +596,6 @@ app.get('/credithistory', auth, async(req, res) => {
   await req.user.populate({
     path: 'customers'
   }).execPopulate()
-  // console.log(req.user.customers)
   if(req.user.customers) {
     var creditCustomers = []
     for(const user of req.user.customers) {
@@ -619,7 +622,6 @@ app.get('/debithistory', auth, async(req, res) => {
   await req.user.populate({
     path: 'customers'
   }).execPopulate()
-  // console.log(req.user.customers)
   if(req.user.customers) {
     var debitCustomers = []
     for(const user of req.user.customers) {
@@ -638,5 +640,28 @@ app.get('/debithistory', auth, async(req, res) => {
   }
   res.render('debitHistory', {
     debitCustomers
+  })
+})
+
+// View Sales
+app.get('/sales', auth, async(req, res) => {
+  await req.user.populate({
+    path: 'transactions',
+    options: { sort: { 'createdAt' : -1} }
+  }).execPopulate()
+  if(req.user.transactions) {
+    var transactions = []
+    for(const transaction of req.user.transactions) {
+      transactions.push({
+        id: transaction._id,
+        customer: transaction.customer,
+        totalPrice: transaction.totalPrice,
+        time: transaction.createdAt
+      })
+    }
+  }
+  console.log(transactions)
+  res.render('salesReport', {
+    transactions
   })
 })
