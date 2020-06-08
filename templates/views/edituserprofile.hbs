@@ -31,49 +31,48 @@
             <br> --}}
             <br><br>
             <div class="container-fluid">
-            <div class="row">
-                <div class="col-sm-2 col-md-2" style="margin-left: 15px;">
-                    {{# if image}}
-                        <img src={{image}}>
-                    {{else}}
-                        <img src="/img/profile.jpeg">
-                        <center>
-                            <form method="POST" id="form">
-                                <input type="file" name="image">
-                                <br><br><br>
-                                <button type="submit" class="btn btn-success">Make Changes!</button>
-                            </form>
-                        </center>
-                    {{/if}}
-                </div>
-                <div class="col-sm-4 col-md-5" style="margin-left: 40px;">
-                    <ul class="list-group-item">
-                        <li class="list-group-item">
-                            <B>Name: </B> <form id="form">  <input type="text" value="{{name}}" id="name"> </form>
-                        </li>
-                        <li class="list-group-item">
-                            <B>Email Address: </B> <input type="text" value="{{email}}" id="email">  
-                        </li>
-                        {{# if storeName}}
-                        <li class="list-group-item">
-                            <b>Store Name: </b> <input type="text" value="{{storeName}}" id="storeName">
-                        </li>
-                        {{else}}
-                        <li class="list-group-item">
-                            <b>Store Name: </b> <input type="text" id="storeName">
-                        </li>
-                        {{/if}}
-                        {{# if address}}
-                        <li class="list-group-item">
-                            <b>Store Address: </b> <input type="text" value="{{address}}" id="address">
-                        </li>
-                        {{else}}
-                        <li class="list-group-item">
-                            <b>Store Address: </b> <input type="text" id="address">
-                        </li>
-                        {{/if}}
-                    </ul>                       
-                </div>
-            </div>
-            <br>
+                <form method="POST" id="form">
+                    <div class="row">
+                        <div class="col-sm-2 col-md-2" style="margin-left: 15px;">
+                            {{# if image}}
+                                <img src={{image}}>
+                            {{else}}
+                                <img src="/img/profile.jpeg">
+                                <center>
+                                    <input type="file" name="image">
+                                </center>
+                            {{/if}}
+                        </div>
+                        <div class="col-sm-4 col-md-5" style="margin-left: 40px;">
+                            <ul class="list-group-item">
+                                <li class="list-group-item">
+                                    <B>Name: </B> <input type="text" value="{{name}}" name="name">
+                                </li>
+                                <li class="list-group-item">
+                                    <B>Email Address: </B> {{email}}
+                                </li>
+                                {{# if storeName}}
+                                <li class="list-group-item">
+                                    <b>Store Name: </b> <input type="text" value="{{storeName}}" name="storeName">
+                                </li>
+                                {{else}}
+                                <li class="list-group-item">
+                                    <b>Store Name: </b> <input type="text" name="storeName">
+                                </li>
+                                {{/if}}
+                                {{# if address}}
+                                <li class="list-group-item">
+                                    <b>Store Address: </b> <input type="text" value="{{address}}" name="address">
+                                </li>
+                                {{else}}
+                                <li class="list-group-item">
+                                    <b>Store Address: </b> <input type="text" name="address">
+                                </li>
+                                {{/if}}
+                            </ul>                       
+                        </div>
+                    </div>
+                    <br><br>
+                    <span style="margin-left: 300px;"><button class="btn btn-success">Save Changes!</button></span>
+                </form>
         </div>

@@ -747,5 +747,5 @@ app.get('/userprofile/edit', auth, (req, res) => {
 })
 
 app.post('/userprofile/edit', auth, (req, res) => {
-  console.log(req.body)
+  console.log(req.body.name)
 })
