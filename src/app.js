@@ -127,6 +127,7 @@ app.post('/customer', auth, upload.single('image'), async(req, res) => {
         features: ['objects'],
       };
     const response = await visualRecognition.analyze(params)
+    console.log(response)
     const objects = response.result.images[0].objects.collections[0].objects
     const ind = await Customer.findOne({name: objects[0].object})
     var bytes = new Uint8Array(ind.image.buffer);
@@ -169,7 +170,7 @@ app.post('/billing', auth, upload.single('image'), async(req, res) => {
             contentType: 'image/jpeg',
           }
         ],
-        collectionIds: ['663179e7-8856-4872-b255-75bdfc169b1a'],
+        collectionIds: ['72a354d5-3a4d-439b-9a61-63de62866dc5'],
         features: ['objects'],
       };
   const response = await visualRecognition.analyze(params)
@@ -403,7 +404,7 @@ app.post('/addproduct', auth, upload.single('image'), async(req, res) => {
           contentType: 'image/jpeg',
         }
       ],
-      collectionIds: ['663179e7-8856-4872-b255-75bdfc169b1a'],
+      collectionIds: ['72a354d5-3a4d-439b-9a61-63de62866dc5'],
       features: ['objects'],
     };
   const response = await visualRecognition.analyze(params)
@@ -732,5 +733,19 @@ app.get('/contact', (req, res) => {
 
 // User Profile 
 app.get('/userprofile', auth, (req, res) => {
-  res.render('userprofile')
+  res.render('userprofile', {
+    name: req.user.username,
+    email: req.user.email
+  })
+})
+
+app.get('/userprofile/edit', auth, (req, res) => {
+  res.render('edituserprofile', {
+    name: req.user.username,
+    email: req.user.email
+  })
+})
+
+app.post('/userprofile/edit', auth, (req, res) => {
+  console.log(req.body)
 })
