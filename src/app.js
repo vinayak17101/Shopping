@@ -797,6 +797,9 @@ app.post('/userprofile/edit', auth, upload.single('image'), async(req, res) => {
   req.user.phone = phone
   const user = new User(req.user)
   await user.save()
-  console.log(user)
   res.redirect('/userprofile')
+})
+
+app.get('/about', (req, res) => {
+  res.render('aboutus')
 })
