@@ -770,10 +770,10 @@ app.get('/userprofile/edit', auth, (req, res) => {
 })
 
 app.post('/userprofile/edit', auth, upload.single('image'), async(req, res) => {
-  if(req.file.buffer) {
+  if(req.file) {
     var image = await sharp(req.file.buffer).resize({width: 350, height: 350}).png().toBuffer()
   } else {
-    var image = undefined
+    var image = req.user.avatar
   }
   if(req.body.storeName) {
     var storeName = req.body.storeName
