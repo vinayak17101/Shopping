@@ -7,4 +7,8 @@ function newbill() {
     url = '/customer'
     window.location.href = url
 }
+function userprofile() {
+    url = '/userprofile'
+    window.location.href = url
+}
 document.getElementById('add-new-product').href = '/addproduct'

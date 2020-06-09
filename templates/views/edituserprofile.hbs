@@ -18,7 +18,7 @@
                 <li class="breadcrumb-item active">Edit</li>
             </ol>
             <br>
-            <h2>Edit User Profile</h2>
+            <h2><span style="margin-left: 25px;">Edit User Profile</span></h2>
             {{!-- <br>
             <h2>Upload the checkout image</h2>
             <br>
@@ -31,11 +31,15 @@
             <br> --}}
             <br><br>
             <div class="container-fluid">
-                <form method="POST" id="form">
+                <form method="POST" enctype="multipart/form-data" id="form">
                     <div class="row">
                         <div class="col-sm-2 col-md-2" style="margin-left: 15px;">
                             {{# if image}}
-                                <img src={{image}}>
+                                <img src={{image}} style="width: 270px; height: 270px">
+                                <br><br>
+                                <center>
+                                    <input type="file" name="image">
+                                </center>
                             {{else}}
                                 <img src="/img/profile.jpeg">
                                 <center>

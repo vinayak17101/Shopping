@@ -736,25 +736,67 @@ app.get('/contact', (req, res) => {
 
 // User Profile 
 app.get('/userprofile', auth, (req, res) => {
+  if(req.user.avatar) {
+    var bytes = new Uint8Array(req.user.avatar.buffer);
+    var src = 'data:image/png;base64,'+encode(bytes)
+  } else {
+    var src = undefined
+  }
   res.render('userprofile', {
     name: req.user.username,
     email: req.user.email,
     address: req.user.address,
     storeName: req.user.storeName,
-    phone: req.user.phone
+    phone: req.user.phone,
+    image: src
   })
 })
 
 app.get('/userprofile/edit', auth, (req, res) => {
+  if(req.user.avatar) {
+    var bytes = new Uint8Array(req.user.avatar.buffer);
+    var src = 'data:image/png;base64,'+encode(bytes)
+  } else {
+    var src = undefined
+  }
   res.render('edituserprofile', {
     name: req.user.username,
     email: req.user.email,
     address: req.user.address,
     storeName: req.user.storeName,
-    phone: req.user.phone
+    phone: req.user.phone,
+    image: src
   })
 })
 
-app.post('/userprofile/edit', auth, (req, res) => {
-  console.log(req.body)
+app.post('/userprofile/edit', auth, upload.single('image'), async(req, res) => {
+  if(req.file.buffer) {
+    var image = await sharp(req.file.buffer).resize({width: 350, height: 350}).png().toBuffer()
+  } else {
+    var image = undefined
+  }
+  if(req.body.storeName) {
+    var storeName = req.body.storeName
+  } else {
+    var storeName = undefined
+  }
+  if(req.body.address) {
+    var address = req.body.address
+  } else {
+    var address = undefined
+  }
+  if(req.body.phone) {
+    var phone = req.body.phone
+  } else {
+    var phone = undefined
+  }
+  req.user.name = req.body.name
+  req.user.avatar = image
+  req.user.address = address
+  req.user.storeName = storeName
+  req.user.phone = phone
+  const user = new User(req.user)
+  await user.save()
+  console.log(user)
+  res.redirect('/userprofile')
 })
