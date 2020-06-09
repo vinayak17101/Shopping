@@ -35,7 +35,7 @@
                     {{else}}
                         <img src="/img/profile.jpeg">
                     {{/if}}
-                    <br>
+                    <br><br>
                     <center>
                         <a href="/userprofile/edit"><button class="btn btn-primary">Edit Information</button></a>
                     </center>
@@ -64,6 +64,15 @@
                         {{else}}
                         <li class="list-group-item">
                             <b>Store Address: </b> Not Provided
+                        </li>
+                        {{/if}}
+                        {{# if phone}}
+                        <li class="list-group-item">
+                            <b>Phone Number: </b> {{phone}}
+                        </li>
+                        {{else}}
+                        <li class="list-group-item">
+                            <b>Phone Number: </b> Not Provided
                         </li>
                         {{/if}}
                     </ul>                       

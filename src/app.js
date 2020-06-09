@@ -123,11 +123,11 @@ app.post('/customer', auth, upload.single('image'), async(req, res) => {
             contentType: 'image/jpeg',
           }
         ],
-        collectionIds: ['05b8716d-e472-41d2-8e08-34cf742c6dce'],
+        collectionIds: ['18425ce7-a4dc-4b55-8fb5-fb53b9f7f42b'],
         features: ['objects'],
       };
     const response = await visualRecognition.analyze(params)
-    console.log(response)
+    try {
     const objects = response.result.images[0].objects.collections[0].objects
     const ind = await Customer.findOne({name: objects[0].object})
     var bytes = new Uint8Array(ind.image.buffer);
@@ -142,6 +142,9 @@ app.post('/customer', auth, upload.single('image'), async(req, res) => {
     }
     req.session.customer = individual
     res.render('customer', individual)
+    } catch(err) {
+      console.log(err)
+    }
 })
 
 var productsBill = []
@@ -735,17 +738,23 @@ app.get('/contact', (req, res) => {
 app.get('/userprofile', auth, (req, res) => {
   res.render('userprofile', {
     name: req.user.username,
-    email: req.user.email
+    email: req.user.email,
+    address: req.user.address,
+    storeName: req.user.storeName,
+    phone: req.user.phone
   })
 })
 
 app.get('/userprofile/edit', auth, (req, res) => {
   res.render('edituserprofile', {
     name: req.user.username,
-    email: req.user.email
+    email: req.user.email,
+    address: req.user.address,
+    storeName: req.user.storeName,
+    phone: req.user.phone
   })
 })
 
 app.post('/userprofile/edit', auth, (req, res) => {
-  console.log(req.body.name)
+  console.log(req.body)
 })
