@@ -1,5 +1,6 @@
 <link href="/css/bootstrap.css" rel="stylesheet">
 {{>userHeader}}
+<title>Inventory Report</title>
 <div id="content-wrapper">
     <div class="container-fluid">
     <!-- Breadcrumbs-->
@@ -48,26 +49,20 @@
                         {{# each products}}
                          <li class="list-group-item">
                             <div class="row">
-                                <div class="col-sm-2 col-md-3">
-                                    <img src="{{this.image}}" style="width: 160px; heigth: 160px;">
+                                <div class="col-sm-2 col-md-3" style="padding-left: 50px;">
+                                    <img src="{{this.image}}" style="width: 60px; heigth: 60px;">
                                 </div>
                                 <div class="col-sm-2 col-md-3">
-                                    <br>
-                                    <br>
                                     <strong>
                                         <h5><span style="padding-left: 10px;">{{this.name}}</span></h5>
                                     </strong>
                                 </div>
                                 <div class="col-sm-4 col-md-3">
-                                    <br>
-                                    <br>
                                     <strong>
                                         <h5><span style="padding-left: 50px;">Rs. {{this.price}}</span></h5>
                                     </strong>
                                 </div>
                                 <div class="col-sm-4 col-md-3">
-                                    <br>
-                                    <br>
                                     <strong>
                                         <h5><span style="padding-left: 50px;">{{this.currentStock}}</span></h5>
                                     </strong>

@@ -103,8 +103,49 @@ app.get('/logout', auth, async (req, res) => {
 })
 
 // Home page
-app.get('/home', auth, (req, res) => {
-  res.render('home')
+app.get('/home', auth, async(req, res) => {
+  await req.user.populate({
+    path: 'transactions',
+    options: { sort: { 'createdAt' : -1} }
+  }).execPopulate()
+  const date = new Date()
+  transactions = []
+  var count = 0
+  var dailyValue = 0
+  for(const transaction of req.user.transactions) {
+    if(date.getDate() == transaction.createdAt.getDate())
+    {
+      dailyValue += transaction.totalPrice
+      count += 1
+    } else {
+      break
+    }
+  }
+  var monthlyValue = 0
+  for(const transaction of req.user.transactions) {
+    if(date.getMonth() == transaction.createdAt.getMonth())
+    {
+      monthlyValue += transaction.totalPrice
+      count += 1
+    } else {
+      break
+    }
+  }
+  await req.user.populate({
+    path: 'products'
+  }).execPopulate()
+  var lowInventory = 0
+  for(products of req.user.products) {
+    if(products.currentStock <= 10) {
+      lowInventory += 1
+    }
+  }
+  res.render('home', {
+    dailyValue,
+    monthlyValue, 
+    count,
+    lowInventory
+  })
 })
 
 // Customer Recognition
@@ -114,7 +155,7 @@ app.get('/customer', auth, (req, res) => {
 })
 
 app.post('/customer', auth, upload.single('image'), async(req, res) => {
-  await sharp(req.file.buffer).resize({width: 250, height: 250}).toFile('image.png')
+  await sharp(req.file.buffer).resize({width: 150, height: 150}).toFile('image.png')
     const imagePath = path.join(__dirname, '../image.png')
     const params = {
         imagesFile: [

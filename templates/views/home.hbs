@@ -32,7 +32,7 @@
                   </div>
                   <div class="card-text">
                       <br><br>
-                    <h1 class="text-center display-3"><strong>135</strong></h1>
+                    <h1 class="text-center display-3"><strong>{{count}}</strong></h1>
                   </div>
                 </div>
                 <a class="card-footer text-white clearfix small z-1" href="/sales">
@@ -46,7 +46,7 @@
             <div class="col-md-6 col-sm-12 col-xs-12 mb-3">
               <div class="card text-white bg-danger o-hidden h-100" style="margin-right: 19px;">
                 <div class="card-header">
-                  <h1>Total Sales</h1>
+                  <h1>Daily Sales</h1>
                   <small class="float-left">Today</small>
                 </div>
                 <div class="card-body">
@@ -55,7 +55,7 @@
                   </div>
                   <div class="card-text">
                       <br><br>
-                    <h1 class="text-center display-3"><strong>24</strong></h1>
+                    <h1 class="text-center display-3"><strong>Rs. {{dailyValue}}</strong></h1>
                   </div>
                 </div>
                 <a class="card-footer text-white clearfix small z-1" href="/sales">
@@ -78,7 +78,7 @@
                   </div>
                   <div class="card-text">
                       <br><br>
-                    <h1 class="text-center display-3"><strong>14</strong></h1>
+                    <h1 class="text-center display-3"><strong>{{lowInventory}}</strong></h1>
                   </div>
                 </div>
                 <a class="card-footer text-white clearfix small z-1" href="/inventoryreport">
@@ -92,18 +92,19 @@
             <div class="col-md-6 col-sm-12 col-xs-12 mb-3">
               <div class="card text-white bg-warning o-hidden h-100" style="margin-right: 19px;">
                 <div class="card-header">
-                  <h1>Improvements</h1>
-                  <small class="float-left">Based on total monthly sales</small>
+                  <h1>Montly Sale</h1>
+                  <small class="float-left">Based on current month</small>
                 </div>
                 <div class="card-body">
                   <div class="card-body-icon">
                     <i class="fa fa-fw fa-shopping-cart"></i>
                   </div>
                   <div class="card-text">
-                    <h1 class="text-center display-3"><strong>27%</strong></h1>
+                    <br><br>
+                    <h1 class="text-center display-3"><strong>Rs. {{monthlyValue}}</strong></h1>
                   </div>
                 </div>
-                <a class="card-footer text-white clearfix small z-1" href="improvements.html">
+                <a class="card-footer text-white clearfix small z-1" href="/sales">
                   <span class="float-left">View Details</span>
                   <span class="float-right">
                     <i class="fa fa-angle-right"></i>
