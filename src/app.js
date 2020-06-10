@@ -214,7 +214,7 @@ app.post('/billing', auth, upload.single('image'), async(req, res) => {
             contentType: 'image/jpeg',
           }
         ],
-        collectionIds: ['72a354d5-3a4d-439b-9a61-63de62866dc5'],
+        collectionIds: ['6d6d95e8-0056-4363-a972-d617d6b81c4f'],
         features: ['objects'],
       };
   const response = await visualRecognition.analyze(params)
@@ -448,7 +448,7 @@ app.post('/addproduct', auth, upload.single('image'), async(req, res) => {
           contentType: 'image/jpeg',
         }
       ],
-      collectionIds: ['72a354d5-3a4d-439b-9a61-63de62866dc5'],
+      collectionIds: ['6d6d95e8-0056-4363-a972-d617d6b81c4f'],
       features: ['objects'],
     };
   const response = await visualRecognition.analyze(params)
