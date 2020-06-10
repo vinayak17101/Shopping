@@ -126,7 +126,6 @@ app.get('/home', auth, async(req, res) => {
     if(date.getMonth() == transaction.createdAt.getMonth())
     {
       monthlyValue += transaction.totalPrice
-      count += 1
     } else {
       break
     }
@@ -241,6 +240,7 @@ app.post('/billing', auth, upload.single('image'), async(req, res) => {
           name: rec.product,
           price: rec.price,
           stock: rec.currentStock,
+          index: countBill++,
           image: recSrc
         })
       }
@@ -262,6 +262,7 @@ app.post('/billing', auth, upload.single('image'), async(req, res) => {
           name: rec.product,
           price: rec.price,
           stock: rec.currentStock,
+          index: countBill++,
           image: recSrc
         })
       }
@@ -283,6 +284,7 @@ app.post('/billing', auth, upload.single('image'), async(req, res) => {
           name: rec.product,
           price: rec.price,
           stock: rec.currentStock,
+          index: countBill++,
           image: recSrc
         })
       }
@@ -304,6 +306,7 @@ app.post('/billing', auth, upload.single('image'), async(req, res) => {
           name: rec.product,
           price: rec.price,
           stock: rec.currentStock,
+          index: countBill++,
           image: recSrc
         })
       }
@@ -325,6 +328,7 @@ app.post('/billing', auth, upload.single('image'), async(req, res) => {
           name: rec.product,
           price: rec.price,
           stock: rec.currentStock,
+          index: countBill++,
           image: recSrc
         })
       }
@@ -346,6 +350,7 @@ app.post('/billing', auth, upload.single('image'), async(req, res) => {
           name: rec.product,
           price: rec.price,
           stock: rec.currentStock,
+          index: countBill++,
           image: recSrc
         })
       }
@@ -408,12 +413,14 @@ app.get('/cart', auth, (req, res) => {
 
 app.get('/addtocart/:id', auth, (req, res) => {
   var productId = req.params.id;
+  console.log(productId)
   var cart = new Cart(req.session.cart ? req.session.cart : {items: {}})
   productInfo.findById(productId, function(err, product) {
     if(err) {
       console.log('Error')
     }
     const qty = parseInt(req.query.qty)
+    console.log(qty)
     cart.add(product, product.id, qty)
     req.session.cart = cart
     res.redirect('/billing')
