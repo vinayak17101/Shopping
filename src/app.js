@@ -871,33 +871,35 @@ app.post('/forecastdemand', auth, async(req, res) => {
   const date = new Date()
   transactions = []
   var count = 0
-  for(const transaction of req.user.transactions) {
-    if(date.getDate() == transaction.createdAt.getDate() || date.getDate() == transaction.createdAt.getDate() - 1)
-    {
-      for(const product of transaction.products) {
-        if(product.product === item.product) {
-          count += product.qty
+  setTimeout(() => {
+    for(const transaction of req.user.transactions) {
+      if(date.getDate() == transaction.createdAt.getDate() || date.getDate() == transaction.createdAt.getDate() - 1)
+      {
+        for(const product of transaction.products) {
+          if(product.product === item.product) {
+            count += product.qty
+          }
         }
+      } else {
+        break
       }
-    } else {
-      break
     }
-  }
-  const forecastFactor = Math.random() * (1.3 - 0.75) + 0.75
-  var forecasted = Math.round(count * req.body.days * forecastFactor)
-  if(forecasted === 0) {
-    forecasted = Math.round(Math.round(Math.random() * (7 - 4) + 4) * req.body.days * forecastFactor)
-  }
-  var bytes = new Uint8Array(item.image.buffer);
-  src = 'data:image/png;base64,'+encode(bytes);
-  res.render('forecast', {
-    name: item.product,
-    image: src,
-    price: item.price,
-    stock: item.currentStock,
-    forecasted,
-    days: req.body.days
-  })
+    const forecastFactor = Math.random() * (1.3 - 0.75) + 0.75
+    var forecasted = Math.round(count * req.body.days * forecastFactor)
+    if(forecasted === 0) {
+      forecasted = Math.round(Math.round(Math.random() * (7 - 4) + 4) * req.body.days * forecastFactor)
+    }
+    var bytes = new Uint8Array(item.image.buffer);
+    src = 'data:image/png;base64,'+encode(bytes);
+    res.render('forecast', {
+      name: item.product,
+      image: src,
+      price: item.price,
+      stock: item.currentStock,
+      forecasted,
+      days: req.body.days
+    })
+  },6000)
 })
 
 
