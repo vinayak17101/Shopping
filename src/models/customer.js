@@ -15,7 +15,6 @@ const customerSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        unique: true, 
         required: true
     },
     loyalityPoints: {
