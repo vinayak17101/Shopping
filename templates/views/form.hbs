@@ -43,6 +43,23 @@
                         </div>
                     {{/each}}
                 </div>
+                <br>
+                {{# if recommended}}
+                <h3>Recommended Product</h3>
+                {{/if}}
+                <div class="row">
+                    {{#each recommended}}
+                        <div class="column">
+                            <center>
+                                <img src="{{this.image}}">
+                                <p><b>Rs. {{this.price}} <br> {{this.name}} <br> Current Stock: <span style="color: green;">{{this.stock}}</span></b></p>
+                                <label for="qty"><b>Quantity</b></label>
+                                <input type="number" name="qty" id="qty{{this.index}}" style="width: 4em">
+                                <a href="/addtocart/{{this.id}}" class="add-cart" id="add-cart{{this.index}}"><button type="button" class="btn btn-success" onclick="add({{this.index}})">Include</button></a>
+                            </center>
+                        </div>
+                    {{/each}}
+                </div>
             </div>
             </div>
         </div>

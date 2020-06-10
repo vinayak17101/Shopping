@@ -190,6 +190,7 @@ app.post('/customer', auth, upload.single('image'), async(req, res) => {
 
 var productsBill = []
 var countBill = 0
+var recommended = []
 
 // Billing Page
 app.get('/billing', auth, (req, res) => {
@@ -200,12 +201,13 @@ app.get('/billing', auth, (req, res) => {
   }
   res.render('form', {
     productsBill,
-    totalQty
+    totalQty,
+    recommended
   })
 })
 
 app.post('/billing', auth, upload.single('image'), async(req, res) => {
-    await sharp(req.file.buffer).resize({width: 250, height: 250}).toFile('image.png')
+    await sharp(req.file.buffer).resize({width: 300, height: 300}).toFile('image.png')
     const imagePath = path.join(__dirname, '../image.png')
     const params = {
         imagesFile: [
@@ -215,12 +217,139 @@ app.post('/billing', auth, upload.single('image'), async(req, res) => {
           }
         ],
         collectionIds: ['6d6d95e8-0056-4363-a972-d617d6b81c4f'],
-        features: ['objects'],
+        features: ['objects']
       };
   const response = await visualRecognition.analyze(params)
   const objects = response.result.images[0].objects.collections[0].objects
   for (const comp of objects) {
     const item = await productInfo.findOne({product: comp.object})
+    var rec;
+    if(item.product === 'Hand-Sanitizer') {
+      rec = await productInfo.findOne({product: 'Saundrya-Facewash'})
+      var flag = false
+      for(const elem of recommended) {
+        if(elem.name == rec.product) {
+          flag = true
+          break
+        } 
+      }
+      if(flag == false) {
+        var bytes = new Uint8Array(rec.image.buffer);
+        recSrc = 'data:image/png;base64,'+encode(bytes);
+        recommended.push({
+          id: rec.id,
+          name: rec.product,
+          price: rec.price,
+          stock: rec.currentStock,
+          image: recSrc
+        })
+      }
+    }
+    if(item.product === 'Haldi-Chandan') {
+      rec = await productInfo.findOne({product: 'Panchgavya'})
+      var flag = false
+      for(const elem of recommended) {
+        if(elem.name == rec.product) {
+          flag = true
+          break
+        } 
+      }
+      if(flag == false) {
+        var bytes = new Uint8Array(rec.image.buffer);
+        recSrc = 'data:image/png;base64,'+encode(bytes);
+        recommended.push({
+          id: rec.id,
+          name: rec.product,
+          price: rec.price,
+          stock: rec.currentStock,
+          image: recSrc
+        })
+      }
+    }
+    if(item.product === 'Panchgavya') {
+      rec = await productInfo.findOne({product: 'Haldi-Chandan'})
+      var flag = false
+      for(const elem of recommended) {
+        if(elem.name == rec.product) {
+          flag = true
+          break
+        } 
+      }
+      if(flag == false) {
+        var bytes = new Uint8Array(rec.image.buffer);
+        recSrc = 'data:image/png;base64,'+encode(bytes);
+        recommended.push({
+          id: rec.id,
+          name: rec.product,
+          price: rec.price,
+          stock: rec.currentStock,
+          image: recSrc
+        })
+      }
+    }
+    if(item.product === 'Body-Lotion') {
+      rec = await productInfo.findOne({product: 'Neem-Tulsi'})
+      var flag = false
+      for(const elem of recommended) {
+        if(elem.name == rec.product) {
+          flag = true
+          break
+        } 
+      }
+      if(flag == false) {
+        var bytes = new Uint8Array(rec.image.buffer);
+        recSrc = 'data:image/png;base64,'+encode(bytes);
+        recommended.push({
+          id: rec.id,
+          name: rec.product,
+          price: rec.price,
+          stock: rec.currentStock,
+          image: recSrc
+        })
+      }
+    }
+    if(item.product === 'Neem-Tulsi') {
+      rec = await productInfo.findOne({product: 'Body-Lotion'})
+      var flag = false
+      for(const elem of recommended) {
+        if(elem.name == rec.product) {
+          flag = true
+          break
+        } 
+      }
+      if(flag == false) {
+        var bytes = new Uint8Array(rec.image.buffer);
+        recSrc = 'data:image/png;base64,'+encode(bytes);
+        recommended.push({
+          id: rec.id,
+          name: rec.product,
+          price: rec.price,
+          stock: rec.currentStock,
+          image: recSrc
+        })
+      }
+    }
+    if(item.product === 'Aastha-Dhoop') {
+      rec = await productInfo.findOne({product: 'Haldi-Chandan'})
+      var flag = false
+      for(const elem of recommended) {
+        if(elem.name == rec.product) {
+          flag = true
+          break
+        } 
+      }
+      if(flag == false) {
+        var bytes = new Uint8Array(rec.image.buffer);
+        recSrc = 'data:image/png;base64,'+encode(bytes);
+        recommended.push({
+          id: rec.id,
+          name: rec.product,
+          price: rec.price,
+          stock: rec.currentStock,
+          image: recSrc
+        })
+      }
+    }
     var flag = true
     for (const c of productsBill) {
       if(c.id == item.id) {
@@ -247,7 +376,8 @@ app.post('/billing', auth, upload.single('image'), async(req, res) => {
   }
   res.render('form', {
     productsBill,
-    totalQty
+    totalQty,
+    recommended
   })
 })
 
@@ -418,6 +548,7 @@ app.get('/finalbill', auth, async(req, res) => {
     req.session.totalPrice = undefined
     req.session.cart = undefined
     productsBill = []
+    recommended = []
     res.redirect('/home')
   }
 })
